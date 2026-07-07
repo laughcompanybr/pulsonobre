@@ -1,4 +1,4 @@
-# Deploy — Arkano Club
+# Deploy — Pulso Nobre
 
 Guia de deploy do projeto em ambiente próprio (Vercel), incluindo migração
 do banco Supabase.

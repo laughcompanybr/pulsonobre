@@ -80,16 +80,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Arkano Club — Gestão de Encomendas Premium" },
+      { title: "Pulso Nobre — Gestão de Encomendas Premium" },
       {
         name: "description",
         content:
-          "Plataforma de gestão de encomendas de alto padrão para a Arkano Club: clientes, fornecedores, pedidos, financeiro e relatórios em um só lugar.",
+          "Plataforma de gestão de encomendas de alto padrão para a Pulso Nobre: clientes, fornecedores, pedidos, financeiro e relatórios em um só lugar.",
       },
-      { name: "author", content: "Arkano Club" },
+      { name: "author", content: "Pulso Nobre" },
       { name: "robots", content: "noindex, nofollow" },
       { name: "theme-color", content: "#0a0a0a" },
-      { property: "og:title", content: "Arkano Club — Gestão de Encomendas Premium" },
+      { property: "og:title", content: "Pulso Nobre — Gestão de Encomendas Premium" },
       {
         property: "og:description",
         content: "Controle completo da operação de encomendas: pedidos, clientes, fornecedores e financeiro.",

@@ -157,7 +157,7 @@ function DashboardPage() {
       <PageHeader
         eyebrow="Visão geral"
         title="Bom trabalho, hoje."
-        description="Painel executivo com o pulso da operação Arkano em tempo real."
+        description="Painel executivo com o pulso da operação Pulso Nobre em tempo real."
       />
       <Suspense fallback={<DashboardSkeleton />}>
         <DashboardContent />

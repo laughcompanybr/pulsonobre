@@ -1,18 +1,18 @@
-import logo from "@/assets/arkano-logo.jpg";
+import logo from "@/assets/pulsonobre-logo.png";
 import { cn } from "@/lib/utils";
 
-interface ArkanoLogoProps {
+interface PulsoNobreLogoProps {
   size?: number;
   className?: string;
   showWordmark?: boolean;
 }
 
-export function ArkanoLogo({ size = 36, className, showWordmark = true }: ArkanoLogoProps) {
+export function PulsoNobreLogo({ size = 36, className, showWordmark = true }: PulsoNobreLogoProps) {
   return (
     <div className={cn("flex items-center gap-3", className)}>
       <img
         src={logo}
-        alt="Arkano Club"
+        alt="Pulso Nobre"
         width={size}
         height={size}
         className="rounded-lg ring-1 ring-border object-cover"
@@ -20,9 +20,9 @@ export function ArkanoLogo({ size = 36, className, showWordmark = true }: Arkano
       />
       {showWordmark ? (
         <div className="flex flex-col leading-none">
-          <span className="font-display text-lg tracking-wide text-foreground">Arkano</span>
+          <span className="font-display text-lg tracking-wide text-foreground">Pulso</span>
           <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-            Club
+            Nobre
           </span>
         </div>
       ) : null}
