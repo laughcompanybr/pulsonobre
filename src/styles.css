@@ -83,7 +83,7 @@
   --popover: oklch(0.155 0.004 260);
   --popover-foreground: oklch(0.97 0.005 90);
 
-  --primary: oklch(43.559% 0.26481 264.171);          /* azul Pulso Nobre */
+  --primary: oklch(0.8 0.135 82);          /* dourado Pulso Nobre */
   --primary-foreground: oklch(0.11 0.004 260);
 
   --secondary: oklch(0.22 0.004 260);
