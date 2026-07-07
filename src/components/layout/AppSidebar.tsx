@@ -38,7 +38,7 @@ export function AppSidebar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <a
-                href=""
+                href="https://www.instagram.com/pulsonobredanilopalma/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Visitar site oficial da Pulso Nobre"
