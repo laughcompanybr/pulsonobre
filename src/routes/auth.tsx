@@ -35,8 +35,8 @@ function AuthPage() {
   return (
     <AuthHero
       eyebrow="Painel restrito"
-      title={mode === "forgot" ? "Recupere seu" : "O tempo é seu"}
-      highlight={mode === "forgot" ? "acesso." : "maior ativo."}
+      title={mode === "forgot" ? "Recupere seu" : "Pulso Nobre"}
+      highlight={mode === "forgot" ? "acesso." : "Exclusividade pontual."}
       tagline={
         mode === "forgot"
           ? "Enviaremos um link seguro para seu e-mail para redefinir sua senha em segundos."
