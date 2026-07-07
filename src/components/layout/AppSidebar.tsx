@@ -41,14 +41,14 @@ export function AppSidebar() {
                 href="https://www.instagram.com/pulsonobredanilopalma/"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Visitar site oficial da Pulso Nobre"
+                aria-label="Visitar Instagram oficial da Pulso Nobre"
                 className="inline-flex rounded-md outline-none transition-all duration-200 hover:opacity-80 hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar cursor-pointer"
               >
                 <PulsoNobreLogo size={32} showWordmark={!collapsed} />
               </a>
             </TooltipTrigger>
             <TooltipContent side="right" className="hidden md:block">
-              Visitar site oficial da Pulso Nobre
+              Visitar Instagram oficial da Pulso Nobre
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
