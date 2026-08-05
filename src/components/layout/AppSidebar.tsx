@@ -11,7 +11,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { PulsoNobreLogo } from "@/components/brand/PulsoNobreLogo";
+import { PulsoLogo } from "@/components/brand/PulsoLogo";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { NAV_ITEMS, type NavItem } from "./nav-config";
 
@@ -41,14 +41,14 @@ export function AppSidebar() {
                 href="https://www.instagram.com/pulsonobredanilopalma/"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Visitar Instagram oficial da Pulso Nobre"
+                aria-label="Visitar instagram oficial da Pulso Nobre"
                 className="inline-flex rounded-md outline-none transition-all duration-200 hover:opacity-80 hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar cursor-pointer"
               >
-                <PulsoNobreLogo size={32} showWordmark={!collapsed} />
+                <PulsoLogo size={32} showWordmark={!collapsed} />
               </a>
             </TooltipTrigger>
             <TooltipContent side="right" className="hidden md:block">
-              Visitar Instagram oficial da Pulso Nobre
+              Visitar instagram oficial da Pulso Nobre
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

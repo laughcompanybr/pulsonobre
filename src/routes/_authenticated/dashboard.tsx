@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, lazy } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -21,7 +21,7 @@ import {
   CheckCircle2,
   CircleDollarSign,
   Clock,
-  Landmark,
+  
   Package,
   ReceiptText,
   Truck,
@@ -34,11 +34,13 @@ import {
 
 
 import { PageHeader } from "@/components/common/PageHeader";
-import { EmptyState } from "@/components/common/EmptyState";
-import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
-import { formatBRL, formatNumber } from "@/lib/format";
+const EmptyState = lazy(() => import("@/components/common/EmptyState").then(m => ({ default: m.EmptyState })));
+const DashboardSkeleton = lazy(() => import("@/components/dashboard/DashboardSkeleton").then(m => ({ default: m.DashboardSkeleton })));
+import { formatBRL, formatNumber, formatDate } from "@/lib/format";
 import { getDashboardStats, type DashboardStats } from "@/lib/dashboard.functions";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 const dashboardQueryOptions = (fn: () => Promise<DashboardStats>) =>
   queryOptions({
@@ -57,12 +59,6 @@ function exportBreakdownPdf(data: DashboardStats) {
     n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   const now = new Date();
   const monthLabel = now.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
-  const taxLabel = data.taxRate.toFixed(2).replace(/\.?0+$/, "");
-  const clampedNote = data.taxRateClamped
-    ? `<p class="warn">Aviso: a alíquota configurada${
-        data.taxRateRaw !== null ? ` (${data.taxRateRaw}%)` : ""
-      } estava fora de 0%–100% e foi ajustada para ${taxLabel}%.</p>`
-    : "";
   const html = `<!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"/>
 <title>Detalhamento do lucro — ${monthLabel}</title>
@@ -75,22 +71,19 @@ function exportBreakdownPdf(data: DashboardStats) {
   th, td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; text-align: left; }
   td.n { text-align: right; font-variant-numeric: tabular-nums; }
   tr.total td { border-top: 2px solid #0f172a; border-bottom: none; font-weight: 700; }
-  .warn { background: #fef3c7; border: 1px solid #f59e0b; color: #92400e; padding: 8px 12px; border-radius: 6px; font-size: 12px; margin: 12px 0; }
   .foot { margin-top: 24px; color: #64748b; font-size: 11px; }
 </style></head>
 <body>
   <h1>Detalhamento do lucro — ${monthLabel}</h1>
   <p class="sub">Gerado em ${now.toLocaleString("pt-BR")}</p>
-  ${clampedNote}
   <table>
     <tbody>
       <tr><td>Lucro bruto</td><td class="n">${fmt(data.profitGrossMonth)}</td></tr>
       <tr><td>− Despesas do mês</td><td class="n">−${fmt(data.expensesMonth)}</td></tr>
-      <tr><td>− Imposto (${taxLabel}% sobre o lucro bruto)</td><td class="n">−${fmt(data.taxAmountMonth)}</td></tr>
       <tr class="total"><td>= Lucro líquido</td><td class="n">${fmt(data.profitMonth)}</td></tr>
     </tbody>
   </table>
-  <p class="foot">Fórmula: Lucro líquido = Lucro bruto − Despesas − max(Lucro bruto, 0) × alíquota.</p>
+  <p class="foot">Fórmula: Lucro líquido = Lucro bruto − Despesas.</p>
   <script>window.addEventListener('load', () => setTimeout(() => window.print(), 200));</script>
 </body></html>`;
   const w = window.open("", "_blank", "noopener,noreferrer,width=800,height=900");
@@ -99,6 +92,7 @@ function exportBreakdownPdf(data: DashboardStats) {
   w.document.write(html);
   w.document.close();
 }
+
 
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -175,6 +169,8 @@ function DashboardContent() {
 
   return (
     <div className="space-y-4">
+      {/* CRM ALERTS REMOVED */}
+
       {/* HERO KPIs — dense bento row */}
       <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <KpiTile
@@ -188,26 +184,51 @@ function DashboardContent() {
         <KpiTile
           eyebrow="Lucro · mês"
           value={formatBRL(data.profitMonth)}
-          hint={`Margem ${margin.toFixed(1)}% · líquido após despesas e imposto`}
+          hint={`Margem ${margin.toFixed(1)}% · líquido após despesas`}
           icon={CircleDollarSign}
           accent="success"
           delay={0.04}
         />
         <KpiTile
-          eyebrow={`Imposto · ${data.taxRate.toFixed(2).replace(/\.?0+$/, "")}%`}
-          value={formatBRL(data.taxAmountMonth)}
-          hint="Calculado sobre o lucro bruto"
-          icon={Landmark}
-          accent="warning"
+          eyebrow="A receber"
+          value={formatBRL(data.receivable)}
+          icon={Wallet}
           delay={0.08}
         />
         <KpiTile
           eyebrow="Despesas · mês"
           value={formatBRL(data.expensesMonth)}
-          hint="Abatido do lucro"
-          icon={ReceiptText}
+          icon={ArrowDownRight}
+          accent="warning"
           delay={0.12}
         />
+      </section>
+
+      {/* Agenda & Clientes Bento Row */}
+      <section className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+        <div className="bento-tile p-5">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Próximos compromissos</p>
+          <div className="mt-4 space-y-3">
+            {data.crm.upcomingEvents.length ? (
+              data.crm.upcomingEvents.map(e => (
+                <div key={e.id} className="flex items-center justify-between text-sm">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium">{e.title}</p>
+                    <p className="text-xs text-muted-foreground">{formatDate(e.due_date)}</p>
+                  </div>
+                  <Badge variant="outline" className="ml-2 shrink-0 text-[10px]">Agenda</Badge>
+                </div>
+              ))
+            ) : (
+              <p className="py-4 text-center text-xs text-muted-foreground">Sem compromissos agendados.</p>
+            )}
+            <Button size="sm" variant="ghost" className="w-full text-xs" asChild>
+              <a href="/agenda">Ver agenda completa</a>
+            </Button>
+          </div>
+        </div>
+
+        <RevenueChart data={data.monthly} className="lg:col-span-2" />
       </section>
 
       {/* Detalhamento do mês — auditoria rápida do cálculo do lucro líquido */}
@@ -219,7 +240,7 @@ function DashboardContent() {
           <h2 className="text-sm font-medium">Detalhamento do lucro · mês</h2>
           <div className="flex items-center gap-3">
             <p className="text-[11px] text-muted-foreground">
-              Lucro bruto − Despesas − Imposto ({data.taxRate.toFixed(2).replace(/\.?0+$/, "")}%) = Lucro líquido
+              Lucro bruto − Despesas = Lucro líquido
             </p>
             <button
               type="button"
@@ -231,19 +252,7 @@ function DashboardContent() {
             </button>
           </div>
         </div>
-        {data.taxRateClamped ? (
-          <div
-            role="alert"
-            data-testid="tax-clamp-warning"
-            className="mb-3 rounded-md border border-amber-500/50 bg-amber-500/10 px-3 py-2 text-[11px] text-amber-700 dark:text-amber-300"
-          >
-            A alíquota de imposto configurada
-            {data.taxRateRaw !== null ? ` (${data.taxRateRaw}%)` : ""}
-            {" "}estava fora do intervalo válido de 0% a 100% e foi ajustada automaticamente para {data.taxRate}%.
-            Atualize o valor em Configurações para evitar este aviso.
-          </div>
-        ) : null}
-        <div className="grid grid-cols-2 gap-3 text-sm md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 text-sm md:grid-cols-3">
           <div className="rounded-md border border-border/70 bg-background/60 p-3">
             <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Lucro bruto</p>
             <p data-testid="pb-gross" className="mt-1 font-display text-lg">{formatBRL(data.profitGrossMonth)}</p>
@@ -251,12 +260,6 @@ function DashboardContent() {
           <div className="rounded-md border border-border/70 bg-background/60 p-3">
             <p className="text-[11px] uppercase tracking-wider text-muted-foreground">− Despesas</p>
             <p data-testid="pb-expenses" className="mt-1 font-display text-lg text-destructive">−{formatBRL(data.expensesMonth)}</p>
-          </div>
-          <div className="rounded-md border border-border/70 bg-background/60 p-3">
-            <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
-              − Imposto ({data.taxRate.toFixed(2).replace(/\.?0+$/, "")}%)
-            </p>
-            <p data-testid="pb-tax" className="mt-1 font-display text-lg text-destructive">−{formatBRL(data.taxAmountMonth)}</p>
           </div>
           <div className="rounded-md border border-primary/60 bg-primary/5 p-3">
             <p className="text-[11px] uppercase tracking-wider text-muted-foreground">= Lucro líquido</p>
@@ -269,6 +272,7 @@ function DashboardContent() {
           </div>
         </div>
       </section>
+
 
 
       {/* Financeiro consolidado */}
@@ -419,7 +423,7 @@ function KpiTile({
       : accent === "success"
         ? "text-[color:var(--color-success)]"
         : accent === "warning"
-          ? "text-[color:var(--color-warning)]"
+          ? "text-destructive"
           : "text-foreground";
 
   return (
@@ -446,7 +450,8 @@ function KpiTile({
         className={cn(
           "mt-5 font-display leading-none tracking-tight",
           featured ? "text-3xl sm:text-[2.1rem]" : "text-2xl sm:text-[1.7rem]",
-          featured && accent === "gold" ? "text-gold-shine" : accentText,
+          featured && accent === "gold" ? "text-gold-shine" : 
+          accent === "warning" ? "text-destructive-shine" : accentText,
         )}
       >
         {value}

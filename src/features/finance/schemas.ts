@@ -4,11 +4,11 @@ export const EXPENSE_CATEGORIES = [
   "Operacional",
   "Marketing",
   "Logística",
-  "Impostos",
   "Salários",
   "Comissões",
   "Outros",
 ] as const;
+
 
 const money = z
   .union([z.string(), z.number()])
@@ -24,7 +24,8 @@ export const expenseSchema = z.object({
   amount: money,
   category: z.enum(EXPENSE_CATEGORIES).default("Operacional"),
   incurred_at: z.string().optional().transform((v) => (v && v.length ? v : new Date().toISOString().slice(0, 10))),
-  receipt_url: z.string().trim().max(500).optional().nullable(),
+  // receipt_url removed
+
 });
 export type ExpenseInput = z.input<typeof expenseSchema>;
 
@@ -63,7 +64,7 @@ export const financialTxSchema = z.object({
   due_date: z.string().optional().nullable(),
   paid_at: z.string().optional().nullable(),
   notes: z.string().trim().max(1000).optional().nullable(),
-  receipt_url: z.string().trim().max(500).optional().nullable(),
+  // receipt_url removed
 });
 export type FinancialTxInput = z.input<typeof financialTxSchema>;
 

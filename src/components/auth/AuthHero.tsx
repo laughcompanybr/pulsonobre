@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { PulsoNobreLogo } from "@/components/brand/PulsoNobreLogo";
+import { PulsoLogo } from "@/components/brand/PulsoLogo";
 
 interface AuthHeroProps {
   eyebrow: string;
@@ -51,7 +51,7 @@ export function AuthHero({ eyebrow, title, highlight, tagline, children }: AuthH
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <PulsoNobreLogo size={44} />
+            <PulsoLogo size={44} />
           </motion.div>
 
           <div className="max-w-xl">
@@ -110,7 +110,7 @@ export function AuthHero({ eyebrow, title, highlight, tagline, children }: AuthH
             transition={{ duration: 0.5 }}
             className="mb-8 flex flex-col items-center gap-4 text-center lg:hidden"
           >
-            <PulsoNobreLogo size={44} />
+            <PulsoLogo size={44} />
             <h1 className="font-display text-3xl leading-tight">
               {title}
               {highlight ? <span className="ml-2 text-gold-shine">{highlight}</span> : null}

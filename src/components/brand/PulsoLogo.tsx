@@ -1,13 +1,13 @@
-import logo from "@/assets/pulsonobre-logo.png";
+import logo from "@/assets/pulso-logo.jpg";
 import { cn } from "@/lib/utils";
 
-interface PulsoNobreLogoProps {
+interface PulsoLogoProps {
   size?: number;
   className?: string;
   showWordmark?: boolean;
 }
 
-export function PulsoNobreLogo({ size = 36, className, showWordmark = true }: PulsoNobreLogoProps) {
+export function PulsoLogo({ size = 36, className, showWordmark = true }: PulsoLogoProps) {
   return (
     <div className={cn("flex items-center gap-3", className)}>
       <img
@@ -15,6 +15,7 @@ export function PulsoNobreLogo({ size = 36, className, showWordmark = true }: Pu
         alt="Pulso Nobre"
         width={size}
         height={size}
+        loading="lazy"
         className="rounded-lg ring-1 ring-border object-cover"
         style={{ width: size, height: size }}
       />
