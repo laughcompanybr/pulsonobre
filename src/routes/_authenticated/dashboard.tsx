@@ -1,4 +1,4 @@
-import { Suspense, useEffect, lazy } from "react";
+import { Suspense, useEffect } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -34,8 +34,8 @@ import {
 
 
 import { PageHeader } from "@/components/common/PageHeader";
-const EmptyState = lazy(() => import("@/components/common/EmptyState").then(m => ({ default: m.EmptyState })));
-const DashboardSkeleton = lazy(() => import("@/components/dashboard/DashboardSkeleton").then(m => ({ default: m.DashboardSkeleton })));
+import { EmptyState } from "@/components/common/EmptyState";
+import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
 import { formatBRL, formatNumber, formatDate } from "@/lib/format";
 import { getDashboardStats, type DashboardStats } from "@/lib/dashboard.functions";
 import { cn } from "@/lib/utils";
@@ -151,7 +151,7 @@ function DashboardPage() {
       <PageHeader
         eyebrow="Visão geral"
         title="Bom trabalho, hoje."
-        description="Painel executivo com o pulso da operação Pulso Nobre em tempo real."
+        description="Painel executivo com a operação da Pulso Nobre em tempo real."
       />
       <Suspense fallback={<DashboardSkeleton />}>
         <DashboardContent />
@@ -169,7 +169,6 @@ function DashboardContent() {
 
   return (
     <div className="space-y-4">
-      {/* CRM ALERTS REMOVED */}
 
       {/* HERO KPIs — dense bento row */}
       <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -190,16 +189,15 @@ function DashboardContent() {
           delay={0.04}
         />
         <KpiTile
-          eyebrow="A receber"
-          value={formatBRL(data.receivable)}
-          icon={Wallet}
+          eyebrow="Tarefas Pendentes"
+          value={String(data.crm.pendingTasks)}
+          icon={CheckCircle2}
           delay={0.08}
         />
         <KpiTile
-          eyebrow="Despesas · mês"
-          value={formatBRL(data.expensesMonth)}
-          icon={ArrowDownRight}
-          accent="warning"
+          eyebrow="Clientes Totais"
+          value={String(data.clientsTotal)}
+          icon={Users}
           delay={0.12}
         />
       </section>
@@ -423,7 +421,7 @@ function KpiTile({
       : accent === "success"
         ? "text-[color:var(--color-success)]"
         : accent === "warning"
-          ? "text-destructive"
+          ? "text-[color:var(--color-warning)]"
           : "text-foreground";
 
   return (
@@ -450,8 +448,7 @@ function KpiTile({
         className={cn(
           "mt-5 font-display leading-none tracking-tight",
           featured ? "text-3xl sm:text-[2.1rem]" : "text-2xl sm:text-[1.7rem]",
-          featured && accent === "gold" ? "text-gold-shine" : 
-          accent === "warning" ? "text-destructive-shine" : accentText,
+          featured && accent === "gold" ? "text-gold-shine" : accentText,
         )}
       >
         {value}

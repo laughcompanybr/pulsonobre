@@ -135,7 +135,7 @@ function ProfileSection() {
               <div className="md:col-span-2 flex items-center gap-4">
                 <div className="flex size-16 items-center justify-center overflow-hidden rounded-full border border-border bg-secondary/50 text-lg font-semibold">
                   {form.watch("avatar_url") ? (
-                    <img src={form.watch("avatar_url")} alt="Avatar" loading="lazy" className="size-full object-cover" />
+                    <img src={form.watch("avatar_url")} alt="Avatar" className="size-full object-cover" />
                   ) : (
                     (form.watch("full_name") || email || "U").slice(0, 2).toUpperCase()
                   )}
@@ -282,7 +282,7 @@ function ThemeSection() {
 }
 
 /* ------------------ PREFERÊNCIAS ------------------ */
-const PREFS_KEY = "pulso-preferences";
+const PREFS_KEY = "arkano-preferences";
 type Prefs = {
   emailNotifications: boolean;
   desktopNotifications: boolean;
@@ -397,7 +397,7 @@ function BackupSection() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `pulso_backup_${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `arkano_backup_${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
       toast.success("Backup gerado", {

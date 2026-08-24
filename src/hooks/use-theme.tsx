@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
 export type Theme = "dark" | "light";
-const STORAGE_KEY = "pulso-theme";
+const STORAGE_KEY = "arkano-theme";
 
 interface ThemeContextValue {
   theme: Theme;

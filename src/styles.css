@@ -70,7 +70,7 @@
   --shadow-gold: 0 0 0 1px oklch(0.78 0.14 82 / 0.35), 0 8px 30px -8px oklch(0.78 0.14 82 / 0.35);
 }
 
-/* Default = Dark (Pulso Nobre signature — Noir & Gold) */
+/* Default = Dark (Arkano signature — Noir & Gold) */
 :root {
   --radius: 0.875rem;
 
@@ -83,7 +83,7 @@
   --popover: oklch(0.155 0.004 260);
   --popover-foreground: oklch(0.97 0.005 90);
 
-  --primary: oklch(0.8 0.135 82);          /* dourado Pulso Nobre */
+  --primary: oklch(0.8 0.135 82);          /* dourado Arkano */
   --primary-foreground: oklch(0.11 0.004 260);
 
   --secondary: oklch(0.22 0.004 260);
@@ -227,15 +227,6 @@
   background-clip: text;
   color: transparent;
   animation: gold-shine 6s linear infinite;
-}
-
-.text-destructive-shine {
-  background: linear-gradient(90deg, oklch(0.62 0.22 25) 0%, oklch(0.8 0.25 25) 45%, oklch(0.62 0.22 25) 55%, oklch(0.45 0.2 25) 100%);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: gold-shine 4s linear infinite;
 }
 
 
