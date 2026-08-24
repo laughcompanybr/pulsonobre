@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -155,15 +156,18 @@ function ClientesPage() {
                 <Plus className="mr-2 size-4" /> Novo cliente
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
+            <DialogContent className="flex max-h-[92vh] max-w-3xl flex-col overflow-hidden p-0">
+              <DialogHeader className="px-6 pt-6">
                 <DialogTitle className="font-display text-2xl">Novo cliente</DialogTitle>
+                <DialogDescription>Preencha os dados do cliente. Somente o nome é obrigatório.</DialogDescription>
               </DialogHeader>
-              <ClientForm
-                submitLabel="Criar cliente"
-                onSubmit={async (v) => { await createMut.mutateAsync(v as never); }}
-                onCancel={() => setOpenCreate(false)}
-              />
+              <div className="overflow-y-auto px-6 pb-6">
+                <ClientForm
+                  submitLabel="Criar cliente"
+                  onSubmit={async (v) => { await createMut.mutateAsync(v as never); }}
+                  onCancel={() => setOpenCreate(false)}
+                />
+              </div>
             </DialogContent>
           </Dialog>
         }

@@ -6,7 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, MapPin } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Loader2, MapPin, User, Home, FileText } from "lucide-react";
 
 interface Props {
   defaultValues?: Partial<ClientInput>;
@@ -55,6 +63,7 @@ export function ClientForm({ defaultValues, submitLabel = "Salvar", onSubmit, on
     handleSubmit,
     setValue,
     getValues,
+    watch,
     formState: { errors, isSubmitting },
   } = form;
 
@@ -81,118 +90,138 @@ export function ClientForm({ defaultValues, submitLabel = "Salvar", onSubmit, on
   }
 
   const field = (name: keyof ClientInput, label: string, extra?: React.InputHTMLAttributes<HTMLInputElement>) => (
-    <div className="space-y-1.5">
-      <Label htmlFor={name}>{label}</Label>
-      <Input id={name} {...register(name)} {...extra} />
+    <div className="space-y-1">
+      <Label htmlFor={name} className="text-xs">{label}</Label>
+      <Input id={name} {...register(name)} {...extra} className="h-9" />
       {errors[name] ? <p className="text-xs text-destructive">{errors[name]?.message as string}</p> : null}
     </div>
   );
+
+  const statusValue = watch("status");
+  const stateValue = watch("state");
 
   return (
     <form
       onSubmit={handleSubmit(async (v) => {
         await onSubmit(v);
       })}
-      className="space-y-5"
+      className="flex flex-col"
     >
-      <div className="grid gap-4 sm:grid-cols-2">
-        {field("name", "Nome completo *")}
-        {field("company_name", "Empresa")}
-        <div className="space-y-1.5">
-          <Label htmlFor="status">Status</Label>
-          <select
-            id="status"
-            {...register("status")}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
-          >
-            <option value="lead">Lead</option>
-            <option value="prospect">Prospect</option>
-            <option value="active">Cliente Ativo</option>
-            <option value="inactive">Cliente Inativo</option>
-            <option value="lost">Cliente Perdido</option>
-          </select>
-        </div>
-        {field("email", "E-mail", { type: "email", placeholder: "contato@exemplo.com" })}
-        {field("cpf", "CPF", { placeholder: "000.000.000-00", inputMode: "numeric" })}
-        {field("phone", "Telefone", { placeholder: "(11) 99999-9999", inputMode: "tel" })}
-        {field("whatsapp", "WhatsApp", { placeholder: "(11) 99999-9999", inputMode: "tel" })}
-        <div className="space-y-1.5">
-          <Label htmlFor="instagram">Instagram</Label>
-          <Input id="instagram" placeholder="@usuario" {...register("instagram")} />
-          {errors.instagram ? <p className="text-xs text-destructive">{errors.instagram.message}</p> : null}
-        </div>
-      </div>
+      <Tabs defaultValue="dados" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="dados"><User className="mr-1.5 size-3.5" /> Dados</TabsTrigger>
+          <TabsTrigger value="endereco"><Home className="mr-1.5 size-3.5" /> Endereço</TabsTrigger>
+          <TabsTrigger value="obs"><FileText className="mr-1.5 size-3.5" /> Obs</TabsTrigger>
+        </TabsList>
 
-      <div className="rounded-xl border border-border bg-muted/20 p-4">
-        <p className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-          <MapPin className="size-3.5" /> Endereço
-        </p>
-        <div className="grid gap-4 sm:grid-cols-6">
-          <div className="space-y-1.5 sm:col-span-2">
-            <Label htmlFor="zip">CEP</Label>
-            <div className="flex gap-2">
-              <Input
-                id="zip"
-                placeholder="00000-000"
-                inputMode="numeric"
-                {...register("zip")}
-                onBlur={lookupCep}
-              />
-              <Button type="button" variant="outline" size="icon" onClick={lookupCep} disabled={cepLoading} title="Buscar CEP">
-                {cepLoading ? <Loader2 className="size-4 animate-spin" /> : <MapPin className="size-4" />}
-              </Button>
+        <TabsContent value="dados" className="mt-3 space-y-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {field("name", "Nome completo *")}
+            {field("company_name", "Empresa")}
+            <div className="space-y-1">
+              <Label htmlFor="status" className="text-xs">Status</Label>
+              <Select
+                value={statusValue}
+                onValueChange={(v) => setValue("status", v as ClientInput["status"], { shouldValidate: true })}
+              >
+                <SelectTrigger id="status" className="h-9">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="lead">Lead</SelectItem>
+                  <SelectItem value="prospect">Prospect</SelectItem>
+                  <SelectItem value="active">Cliente Ativo</SelectItem>
+                  <SelectItem value="inactive">Cliente Inativo</SelectItem>
+                  <SelectItem value="lost">Cliente Perdido</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            {errors.zip ? <p className="text-xs text-destructive">{errors.zip.message}</p> : null}
+            {field("email", "E-mail", { type: "email", placeholder: "contato@exemplo.com" })}
+            {field("cpf", "CPF", { placeholder: "000.000.000-00", inputMode: "numeric" })}
+            {field("phone", "Telefone", { placeholder: "(11) 99999-9999", inputMode: "tel" })}
+            {field("whatsapp", "WhatsApp", { placeholder: "(11) 99999-9999", inputMode: "tel" })}
+            {field("instagram", "Instagram", { placeholder: "@usuario" })}
           </div>
-          <div className="space-y-1.5 sm:col-span-3">
-            <Label htmlFor="street">Rua</Label>
-            <Input id="street" {...register("street")} />
-          </div>
-          <div className="space-y-1.5 sm:col-span-1">
-            <Label htmlFor="number">Número</Label>
-            <Input id="number" {...register("number")} />
-          </div>
-          <div className="space-y-1.5 sm:col-span-2">
-            <Label htmlFor="complement">Complemento</Label>
-            <Input id="complement" {...register("complement")} />
-          </div>
-          <div className="space-y-1.5 sm:col-span-2">
-            <Label htmlFor="district">Bairro</Label>
-            <Input id="district" {...register("district")} />
-          </div>
-          <div className="space-y-1.5 sm:col-span-2">
-            <Label htmlFor="city">Cidade</Label>
-            <Input id="city" {...register("city")} />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="state">UF</Label>
-            <select
-              id="state"
-              {...register("state")}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
-            >
-              <option value="">—</option>
-              {UF.map((u) => (
-                <option key={u} value={u}>{u}</option>
-              ))}
-            </select>
-            {errors.state ? <p className="text-xs text-destructive">{errors.state.message}</p> : null}
-          </div>
-          <div className="space-y-1.5 sm:col-span-6">
-            <Label htmlFor="reference">Referência</Label>
-            <Input id="reference" {...register("reference")} />
-          </div>
-        </div>
-      </div>
+        </TabsContent>
 
+        <TabsContent value="endereco" className="mt-3 space-y-3">
+          <div className="rounded-xl border border-border bg-muted/20 p-3">
+            <p className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              <MapPin className="size-3.5" /> Endereço
+            </p>
+            <div className="grid gap-3 sm:grid-cols-6">
+              <div className="space-y-1 sm:col-span-2">
+                <Label htmlFor="zip" className="text-xs">CEP</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="zip"
+                    placeholder="00000-000"
+                    inputMode="numeric"
+                    {...register("zip")}
+                    onBlur={lookupCep}
+                    className="h-9"
+                  />
+                  <Button type="button" variant="outline" size="icon" className="h-9 w-9 shrink-0" onClick={lookupCep} disabled={cepLoading} title="Buscar CEP">
+                    {cepLoading ? <Loader2 className="size-4 animate-spin" /> : <MapPin className="size-4" />}
+                  </Button>
+                </div>
+                {errors.zip ? <p className="text-xs text-destructive">{errors.zip.message}</p> : null}
+              </div>
+              <div className="space-y-1 sm:col-span-3">
+                <Label htmlFor="street" className="text-xs">Rua</Label>
+                <Input id="street" {...register("street")} className="h-9" />
+              </div>
+              <div className="space-y-1 sm:col-span-1">
+                <Label htmlFor="number" className="text-xs">Número</Label>
+                <Input id="number" {...register("number")} className="h-9" />
+              </div>
+              <div className="space-y-1 sm:col-span-2">
+                <Label htmlFor="complement" className="text-xs">Complemento</Label>
+                <Input id="complement" {...register("complement")} className="h-9" />
+              </div>
+              <div className="space-y-1 sm:col-span-2">
+                <Label htmlFor="district" className="text-xs">Bairro</Label>
+                <Input id="district" {...register("district")} className="h-9" />
+              </div>
+              <div className="space-y-1 sm:col-span-2">
+                <Label htmlFor="city" className="text-xs">Cidade</Label>
+                <Input id="city" {...register("city")} className="h-9" />
+              </div>
+              <div className="space-y-1 sm:col-span-2">
+                <Label htmlFor="state" className="text-xs">UF</Label>
+                <Select
+                  value={stateValue || ""}
+                  onValueChange={(v) => setValue("state", v, { shouldValidate: true })}
+                >
+                  <SelectTrigger id="state" className="h-9 w-full">
+                    <SelectValue placeholder="—" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {UF.map((u) => (
+                      <SelectItem key={u} value={u}>{u}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.state ? <p className="text-xs text-destructive">{errors.state.message}</p> : null}
+              </div>
+              <div className="space-y-1 sm:col-span-6">
+                <Label htmlFor="reference" className="text-xs">Referência</Label>
+                <Input id="reference" {...register("reference")} className="h-9" />
+              </div>
+            </div>
+          </div>
+        </TabsContent>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="notes">Observações</Label>
-        <Textarea id="notes" rows={3} {...register("notes")} />
-        {errors.notes ? <p className="text-xs text-destructive">{errors.notes.message}</p> : null}
-      </div>
+        <TabsContent value="obs" className="mt-3 space-y-3">
+          <div className="space-y-1">
+            <Label htmlFor="notes" className="text-xs">Observações</Label>
+            <Textarea id="notes" rows={5} {...register("notes")} />
+            {errors.notes ? <p className="text-xs text-destructive">{errors.notes.message}</p> : null}
+          </div>
+        </TabsContent>
+      </Tabs>
 
-      <div className="flex justify-end gap-2 pt-2">
+      <div className="mt-4 flex justify-end gap-2 border-t border-border pt-3">
         {onCancel ? (
           <Button type="button" variant="ghost" onClick={onCancel} disabled={isSubmitting}>
             Cancelar
